@@ -1,0 +1,212 @@
+<html>
+<head>
+	<title>Register Page</title>
+	<link rel="stylesheet" href="lib/w3.css">
+	<style>
+	body
+	{
+		background: url("image/toko.jpg") no-repeat center center fixed; 
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+	}
+	#judul
+	{
+		height:20%;
+		background-color:cadetblue;
+		opacity:0.7;
+	}
+	#content
+	{
+		height:74%;
+		width:100%;
+	}
+	#topContent
+	{
+		height:30%;
+		width:100%;
+	}
+	#botContent
+	{
+		height:70%;
+		width:100%;
+	}
+	.slide
+	{
+		width:100%;
+		height:100%;
+	}
+	#groupMark
+	{
+		color:white;
+		width:100%;
+		height:6%;
+		background-color:black;
+		opacity:0.8;
+		z-index:-1;
+	}
+	.w3-myfont 
+	{
+		font-family: "Comic Sans MS", cursive, sans-serif;
+	}
+	.asd
+	{
+		padding-top:5px;
+		padding-bottom:5px;
+		margin-top:1%;
+		margin-bottom:1%;
+		width:50%;
+	}
+	.btn
+	{
+		width:15%;
+		height:17%;
+	}
+	#myModal
+	{
+		display: none;
+		position: fixed;
+		z-index: 1;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgb(0,0,0);
+		background-color: rgba(0,0,0,0.4);
+	}
+	
+	#myModal2
+	{
+		display: none;
+		position: fixed;
+		z-index: 1;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgb(0,0,0);
+		background-color: rgba(0,0,0,0.4);
+	}
+	</style>
+</head>
+<center>
+<body>
+	<?php
+		$mysqli = new mysqli("localhost", "root", "", "tokofisik");
+		if($mysqli -> connect_errno)
+		{
+			echo "Failed to connect to MySQL:
+			{" . $mysqli->connect_errno . "} " . $mysqli->connect_error;
+		}
+		else
+		{
+			$con=mysqli_connect("localhost", "root", "", "tokofisik");
+			if(isset($_POST["username"])){
+			$username  	= $_POST["username"];
+			$password  	= $_POST["password"];
+			$cpassword	= $_POST["conPass"];
+			$name      	= $_POST["name"];
+			$phone     	= $_POST["phone"];
+			$address   	= $_POST["address"];
+			$email		= $_POST["email"];
+			$jabatan	= $_POST["id"];
+			
+				if($password!=$cpassword){
+					echo "Password Tidak Sama";
+				}else{
+				$sql = "SELECT COUNT(*) AS hitungJumlah FROM pegawai  where username LIKE '" .$username."'";
+				$result = $mysqli->query($sql);
+				$hasil = $result->fetch_array();
+					if($hasil['hitungJumlah']>0)
+					{
+						echo "<script>document.getElementById('myModal2').style.display='block'</script>";
+					}
+					else
+					{
+						if($hasil['hitungJumlah']>0){
+							echo "<script>document.getElementById('myModal2').style.display='block'</script>";
+						}
+						else{
+							$sql2 = "INSERT INTO pegawai(nama_pegawai,username,password,email,alamat,noTelpon,id_jabatan) 
+							VALUES ('".$name."','".$username."','".$password."','".$email."','".$address."','".$phone."',".$jabatan.")";
+							$mysqli->query($sql2);
+							header('Location: ../PHP/login_page.php');
+						}
+					}
+				}
+			}
+		}
+	?>
+	<div id="judul" class="w3-container w3-myfont">
+		<p class="w3-jumbo">PENCARIAN TOKO FISIK</p>
+	</div>
+	<div id="content" class="w3-container">
+		<div id="topContent" class="w3-container">
+			<form method="POST" action="signup_page.php">
+				<input class="asd w3-input w3-validate" type="text" placeholder="Username" name="username" required></input>
+				<input class="asd w3-input w3-validate" type="password" placeholder="Password" name="password" required></input>
+				<input class="asd w3-input w3-validate" type="password" placeholder="Confirm Password" name="conPass" required></input>
+				<input class="asd w3-input w3-validate" type="text" placeholder="Nama Pegawai" name="name" required></input>
+				<input class="asd w3-input w3-validate" type="text" placeholder="Alamat" name="address" required></input>
+				<input class="asd w3-input w3-validate" type="text" placeholder="Email" name="email" required></input>
+				<input class="asd w3-input w3-validate" type="text" placeholder="Nomor Telephone" name="phone" required></input>
+				<select style="padding-top:5px;padding-bottom:5px;margin-bottom:1%;width:50%;" name="id">
+					<option value="#">Pilih Jabatan Pegawai</option>
+					<option value="1">Staff Data Barang dan Toko Fisik</option>
+					<option value="2">Staff Keuangan</option>
+				</select>
+				</br>
+				<input class="btn w3-button w3-white w3-border w3-border-red w3-round-large" type="button" onclick="location.href='index_page.php';" value="CANCEL"></input>
+				<input class="btn w3-button w3-white w3-border w3-border-red w3-round-large" type="submit" value="SIGN UP"></input>
+			</form>
+		</div>
+		<div id="botContent" class="w3-container">
+			
+		</div>
+	</div>
+	<div id="groupMark" class="w3-container">
+		<p>&copy; 2017 Team Pencarian Toko Fisik - Sistem Informasi Pencarian Toko Fisik</p>
+	</div>
+	
+		<div id="myModal" class="w3-animate-top">
+			<div class="content">
+				<p>You have registered as 
+				<?php
+					echo $_POST['name'];
+				?>.</br>
+				Please Login to continue.
+				</p>
+				<input class="mbtn w3-btn" type="button" onclick="location.href='../general/login_page.php';" value="LOGIN"></input>
+				<input class="mbtn w3-btn" type="button" onclick="location.href='../../index_page.php';" value="CANCEL"></input>
+			</div>
+		</div>
+		
+		<div id="myModal2" class="w3-animate-top">
+			<div class="content">
+				<p>Username Already Exist! Please use another Username!</p>
+				<input class="mbtn w3-btn" type="button" onclick="location.href='../../pages/general/signup_page.php';" value="OK"></input>
+				<input class="mbtn w3-btn" type="button" onclick="location.href='../../index_page.php';" value="CANCEL"></input>
+			</div>
+		</div>
+</body>
+</center>
+</html>
+
+<script>
+
+	var modal1 = document.getElementById('myModal');
+	var modal2 = document.getElementById('myModal2');
+
+	function modal1()
+	{
+		modal1.style.display = "block";
+	}
+	
+	function modal2()
+	{
+		modal2.style.display = "block";
+	}
+</script>
